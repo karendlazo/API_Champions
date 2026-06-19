@@ -1,59 +1,40 @@
 package com.champions.Champions_League.controller;
-
+import com.champions.Champions_League.dto.PartidoDTO;
 import com.champions.Champions_League.model.Partido;
-import com.champions.Champions_League.repository.PartidoRepository;
+import com.champions.Champions_League.service.PartidoService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/partidos")
 public class PartidoController {
-
-    private final PartidoRepository repositorio;
-
-    public PartidoController(PartidoRepository repositorio) {
-        this.repositorio = repositorio;
+    private final PartidoService partidoService;
+    public PartidoController(PartidoService partidoService) {
+        this.partidoService = partidoService;
     }
-
     @GetMapping
     public List<Partido> obtenerTodos() {
-        return repositorio.findAll();
+        return partidoService.obtenerTodos();
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Partido> obtenerPorId(@PathVariable Long id) {
-        return repositorio.findById(id)
+        return partidoService.obtenerPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    // Aquí usamos el DTO y @Valid. El servicio se encarga de buscar los equipos reales por su ID
     @PostMapping
-    public Partido crear(@RequestBody Partido partido) {
-        return repositorio.save(partido);
+    public ResponseEntity<Partido> guardar(@Valid @RequestBody PartidoDTO partidoDTO) {
+        Partido nuevoPartido = partidoService.crearPartido(partidoDTO);
+        return new ResponseEntity<>(nuevoPartido, HttpStatus.CREATED);
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Partido> actualizar(@PathVariable Long id, @RequestBody Partido partidoActualizado) {
-        return repositorio.findById(id)
-                .map(partido -> {
-                    partido.setEquipoLocal(partidoActualizado.getEquipoLocal());
-                    partido.setEquipoVisitante(partidoActualizado.getEquipoVisitante());
-                    partido.setGolesLocal(partidoActualizado.getGolesLocal());
-                    partido.setGolesVisitante(partidoActualizado.getGolesVisitante());
-                    partido.setFecha(partidoActualizado.getFecha());
-                    partido.setFase(partidoActualizado.getFase());
-                    partido.setEstadio(partidoActualizado.getEstadio());
-                    return ResponseEntity.ok(repositorio.save(partido));
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (repositorio.existsById(id)) {
-            repositorio.deleteById(id);
+        if (partidoService.obtenerPorId(id).isPresent()) {
+            partidoService.eliminar(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();

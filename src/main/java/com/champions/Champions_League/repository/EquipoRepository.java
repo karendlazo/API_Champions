@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EquipoRepository extends JpaRepository<Equipo, Long> {
-    // Spring te da automáticamente:
+    // Spring nos da automáticamente:
     // findAll()       → buscar todos
     // findById(id)    → buscar por ID
     // save(equipo)    → guardar o actualizar

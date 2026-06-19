@@ -3,13 +3,12 @@ spring:
     name: Champions-League
 
   datasource:
-    url: jdbc:postgresql://dpg-d7v0rmflk1mc73as7dmg-a:5432/champions_db_ykj3
+    url: ${SPRING_DATASOURCE_URL}
     driver-class-name: org.postgresql.Driver
-    username: champions_db_ykj3_user
-    password: Q8CrSSkfySPajR9alMmkpkk3eKV6VeYP
-
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: validate
+    show-sql: false

@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
 
 @Entity
 @Table(name = "equipos")
@@ -15,7 +17,9 @@ public class Equipo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String nombre;
+    @Column(nullable = false)
     private String pais;
     private String estadio;
     private String directorTecnico;
