@@ -36,9 +36,10 @@ public class EquipoService {
         equipo.setPais(equipoDTO.getPais());
         equipo.setEstadio(equipoDTO.getEstadio());
         equipo.setDirectorTecnico(equipoDTO.getDirectorTecnico());
-        equipo.setPuntos(equipoDTO.getPuntos());
+        equipo.setPuntos(0); // Los forzamos a 0 siempre al nacer
         return equipoRepository.save(equipo);
     }
+
 
     // Método limpio que actualiza usando DTO
     public Equipo actualizar(Long id, EquipoDTO equipoDTO) {
