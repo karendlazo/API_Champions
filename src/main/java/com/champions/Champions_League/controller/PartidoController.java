@@ -16,7 +16,7 @@ public class PartidoController {
 
     private final PartidoService partidoService;
 
-    public PartidoService(PartidoService partidoService) {
+    public PartidoController(PartidoService partidoService) {
         this.partidoService = partidoService;
     }
 
