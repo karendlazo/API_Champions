@@ -40,13 +40,14 @@ public class PartidoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Partido> actualizar(@PathVariable Long id, @Valid @RequestBody PartidoDTO partidoDTO) {
-        if (partidoService.obtenerPorId(id).isPresent()) {
-            partidoService.eliminar(id);
-            Partido partidoActualizado = partidoService.crearPartido(partidoDTO);
+        try {
+            Partido partidoActualizado = partidoService.actualizar(id, partidoDTO);
             return ResponseEntity.ok(partidoActualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {

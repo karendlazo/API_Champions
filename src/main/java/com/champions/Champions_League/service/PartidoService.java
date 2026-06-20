@@ -50,6 +50,35 @@ public class PartidoService {
         return partidoRepository.save(partido);
     }
 
+
+    public Partido actualizar(Long id, PartidoDTO partidoDTO) {
+        // Regla de negocio
+        if (partidoDTO.getEquipoLocalId().equals(partidoDTO.getEquipoVisitanteId())) {
+            throw new IllegalArgumentException("Un equipo no puede jugar contra sí mismo");
+        }
+
+        // Buscamos el partido original que ya tiene el ID
+        return partidoRepository.findById(id).map(partido -> {
+            Equipo local = equipoService.obtenerPorId(partidoDTO.getEquipoLocalId())
+                    .orElseThrow(() -> new IllegalArgumentException("Equipo local no encontrado"));
+            Equipo visitante = equipoService.obtenerPorId(partidoDTO.getEquipoVisitanteId())
+                    .orElseThrow(() -> new IllegalArgumentException("Equipo visitante no encontrado"));
+
+            // Actualizamos los campos
+            partido.setEquipoLocal(local);
+            partido.setEquipoVisitante(visitante);
+            partido.setGolesLocal(partidoDTO.getGolesLocal());
+            partido.setGolesVisitante(partidoDTO.getGolesVisitante());
+            partido.setFase(partidoDTO.getFase());
+            partido.setEstadio(partidoDTO.getEstadio());
+            partido.setFecha(partidoDTO.getFecha());
+
+            // Lo guardamos (al tener ID, Hibernate hace un UPDATE y no un INSERT nuevo)
+            return partidoRepository.save(partido);
+        }).orElseThrow(() -> new IllegalArgumentException("Partido no encontrado"));
+    }
+
+
     public void eliminar(Long id) {
         partidoRepository.deleteById(id);
     }
