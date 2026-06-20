@@ -29,18 +29,15 @@ public class PartidoService {
     }
 
     public Partido crearPartido(PartidoDTO partidoDTO) {
-        // Regla de negocio: Validar que no jueguen contra sí mismos
         if (partidoDTO.getEquipoLocalId().equals(partidoDTO.getEquipoVisitanteId())) {
             throw new IllegalArgumentException("Un equipo no puede jugar contra sí mismo");
         }
 
-        // Buscar los equipos en la BD
         Equipo local = equipoService.obtenerPorId(partidoDTO.getEquipoLocalId())
                 .orElseThrow(() -> new IllegalArgumentException("Equipo local no encontrado"));
         Equipo visitante = equipoService.obtenerPorId(partidoDTO.getEquipoVisitanteId())
                 .orElseThrow(() -> new IllegalArgumentException("Equipo visitante no encontrado"));
 
-        // Crear el partido con los datos verificados
         Partido partido = new Partido();
         partido.setEquipoLocal(local);
         partido.setEquipoVisitante(visitante);
@@ -48,9 +45,7 @@ public class PartidoService {
         partido.setGolesVisitante(partidoDTO.getGolesVisitante());
         partido.setFase(partidoDTO.getFase());
         partido.setEstadio(partidoDTO.getEstadio());
-
-        // Opcional: Actualizar los puntos de los equipos basados en el resultado
-        // Si quieres que lo hagamos, dímelo más adelante. Por ahora lo dejamos simple.
+        partido.setFecha(partidoDTO.getFecha()); // Guardamos la fecha
 
         return partidoRepository.save(partido);
     }
